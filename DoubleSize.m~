@@ -1,0 +1,27 @@
+function DJ = DoubleSize(I)
+[M,N,R]=size(I) ;
+
+if R>3
+    for k=1:R
+        J(:,:,k) = imresize(I(:,:,k), [2*M 2*N],'bilinear');
+    end
+    for i=1:2*M
+        DJ(i,:,:) = imresize(squeeze(J(i,:,:)), [2*N 2*R], 'bilinear');
+    end
+% else
+%     for k=1:R
+%         DJ(:,:,k) = imresize(I(:,:,k), [2*M 2*N],'linear');
+%     end
+%     
+%     
+%     
+% end
+
+else
+	DJ = zeros(2*M,2*N) ;
+	DJ(1:2:end,1:2:end) = I ;
+	DJ(2:2:end-1,2:2:end-1) = 0.25*I(1:end-1,1:end-1) + 0.25*I(2:end,1:end-1) + ...
+		0.25*I(1:end-1,2:end) + 0.25*I(2:end,2:end) ;
+	DJ(2:2:end-1,1:2:end) = 0.5*I(1:end-1,:) + 0.5*I(2:end,:) ;
+	DJ(1:2:end,2:2:end-1) = 0.5*I(:,1:end-1) + 0.5*I(:,2:end) ;
+end

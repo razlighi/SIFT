@@ -1,0 +1,48 @@
+function RotatedPoint = PointRotator(InputPoint, Degree, RotationCenter)
+ 
+[M N R] = size(InputPoint);
+
+
+
+if N==2
+    RotationCenter = [(RotationCenter(2)) (RotationCenter(1))];
+
+    for i = 1:M
+        TransformedPoint = InputPoint(i,1:N) - RotationCenter;
+        RotationMatrix = [cosd(Degree) -sind(Degree); sind(Degree) cosd(Degree)];
+        RotatedTransformedPoint = RotationMatrix * TransformedPoint';
+        RotatedPoint(i,1:N) = RotatedTransformedPoint' + RotationCenter;
+    end
+end
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% This is coresponds to VolumeRotator Order where x
+%%%%%%%%%%%%%%%%%%%%%%%%% to y to z order is conserved.
+if N==3
+
+TetaX = Degree(1);
+TetaY = Degree(2);
+TetaZ = Degree(3);
+
+Rx = [ 1               0              0
+       0               cosd(TetaX)   -sind(TetaX)
+       0               sind(TetaX)    cosd(TetaX) ];
+      
+Ry = [ cosd(TetaY)     0              sind(TetaY)
+       0               1              0
+      -sind(TetaY)     0              cosd(TetaY) ];
+ 
+        
+Rz = [ cosd(TetaZ)    -sind(TetaZ)    0
+       sind(TetaZ)     cosd(TetaZ)    0
+       0               0              1           ];
+
+    RotationMatrix = Rx*Ry*Rz;
+    for i = 1:M
+        TransformedPoint = InputPoint(i,1:N) - RotationCenter;
+        RotatedTransformedPoint = RotationMatrix * TransformedPoint';
+        RotatedPoint(i,1:N) = RotatedTransformedPoint' + RotationCenter;
+    end
+end 
+

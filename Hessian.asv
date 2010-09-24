@@ -1,0 +1,63 @@
+clear all
+clc
+format long
+
+x = -10:1:10;
+y = x.^3 - 5*x.^2 + x + 4;
+Dy = y(2:end)-y(1:end-1);
+DDy = y(3:end)-2*y(2:end-1)+y(1:end-2);
+DDy(21) = DDy(19);
+DDy(20) = DDy(19);
+Dy(21) = Dy(20);
+
+figure(1)
+plot(x,y, 'b')
+hold on
+grid on
+plot(x, Dy, 'r')
+hold on 
+plot(x, DDy, 'c')
+
+figure(2)
+%Dx = -9.9:1:10.1;
+Dx = -10.1:1:9.9;
+
+Y = Dx.^3 - 5*Dx.^2 + Dx + 4;
+plot(x,Y)
+grid on
+
+InitialError = norm(Y(2:end-2) - y(2:end-2))
+EstimationY = y - Dy*.1 + .5*DDy*.01;
+ExpectedError = norm(Y(2:end-2)-EstimationY(2:end-2))
+
+figure(3)
+plot(y, 'g');
+hold on
+plot(Y, 'b');
+plot(EstimationY, 'r')
+grid on
+
+%%%%%Compute the drevitaives in the traditional format
+
+dy = y(2:end)-y(1:end-1);
+ddy(2:20) = y(1:end-2)-2*y(2:end-1)+y(3:end);
+ddy(21) = ddy(20);
+ddy(1) = ddy(2);
+dy(21) = dy(20);
+
+SecondEstimationY = y + dy*.1 + .5*ddy*.01;
+SecondExpectedError = norm(Y(2:end-2)-SecondEstimationY(2:end-2))
+%%%%%Compute the drevitaives in the traditional format the third format
+
+dy(2:20) = (y(1:end-2)-y(3:end))/2;
+dy(21) = dy(20);
+dy(1) = dy(2);
+ddy(2:20) = y(1:end-2)-2*y(2:end-1)+y(3:end);
+ddy(21) = ddy(20);
+ddy(1) = ddy(2);
+
+ThirdEstimationY = y + dy*.1 + .5*ddy*.01;
+ThirdExpectedError = norm(Y(2:end-2)-ThirdEstimationY(2:end-2))
+
+
+
